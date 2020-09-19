@@ -1,3 +1,5 @@
+const NO_USER_RANK = null;
+
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`
@@ -113,7 +115,7 @@ const getEscapedHTML = (string) => String(string)
   );
 
 const getUserRank = (watchedFilmCount) => {
-  let currentRank = null; // 0 — звание не отображается
+  let currentRank = NO_USER_RANK; // 0 — звание не отображается
 
   // Если просмотрено фильмов больше, чем у максимального ранга
   if (userRankMaxCountOfRank <= watchedFilmCount) {
@@ -142,5 +144,6 @@ export {
   humanizeDate,
   getRandomStrings,
   RenderPosition,
-  getUserRank
+  getUserRank,
+  NO_USER_RANK
 };

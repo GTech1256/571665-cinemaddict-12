@@ -9,7 +9,7 @@ const createUserRankTemplate = (
 ) => {
   return (
     `<section class="header__profile profile">
-      ${userRank === null ? `` : `<p class="profile__rating">${userRank}</p>`}
+      <p class="profile__rating">${userRank}</p>
       <img class="profile__avatar" src="${avatar}" alt="Avatar" width="35" height="35">
     </section>`
   );
