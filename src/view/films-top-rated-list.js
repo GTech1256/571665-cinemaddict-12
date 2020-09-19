@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const createFilmsTopRatedListTemplate = () => {
   return (
     `<section class="films-list--extra">
@@ -9,6 +11,24 @@ const createFilmsTopRatedListTemplate = () => {
   );
 };
 
-export {
-  createFilmsTopRatedListTemplate
-};
+export default class FilmsTopRatedList {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmsTopRatedListTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
