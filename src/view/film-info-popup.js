@@ -1,4 +1,4 @@
-import {humanizeDate} from "../utils";
+import {humanizeDate, createElement} from "../utils";
 
 const getHumanizeDuration = (duration) => {
   const hours = Math.round(duration / 60);
@@ -28,7 +28,7 @@ const renderComment = ({
 </li>`
 );
 
-const createFilmInfoPopupTemplate = (film) => {
+const createFilmInfoPopupTemplate = ({comments, filmInfo}) => {
   const {
     title,
     genre: genres,
@@ -37,13 +37,12 @@ const createFilmInfoPopupTemplate = (film) => {
     writers,
     release,
     runtime,
-    comments,
     director,
     ageRating,
     description,
     totalRating,
     alternativeTitle
-  } = film;
+  } = filmInfo;
 
   const duration = getHumanizeDuration(runtime);
 
@@ -169,6 +168,25 @@ const createFilmInfoPopupTemplate = (film) => {
   );
 };
 
-export {
-  createFilmInfoPopupTemplate
-};
+export default class FilmInfoPopup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmInfoPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

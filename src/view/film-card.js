@@ -1,3 +1,5 @@
+import {createElement} from "../utils.js";
+
 const getHumanizeDuration = (duration) => {
   const hours = Math.round(duration / 60);
   const minutes = duration % 60;
@@ -5,17 +7,16 @@ const getHumanizeDuration = (duration) => {
   return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
 };
 
-const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = ({comments, filmInfo}) => {
   const {
     title,
     genre,
     poster,
     release,
     runtime,
-    comments,
     description,
     totalRating,
-  } = film;
+  } = filmInfo;
 
   const descriptionSliced = description.length > 140 ? `${description.slice(0, 140)}…` : description;
 
@@ -44,6 +45,25 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-export {
-  createFilmCardTemplate
-};
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
