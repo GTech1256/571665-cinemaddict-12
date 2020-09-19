@@ -8,6 +8,7 @@ import FilmsListView from "./view/films-list";
 import ShowMoreButtonView from "./view/show-more-button";
 import FilmsTopRatedListView from "./view/films-top-rated-list";
 import FilmsMostCommentedListView from "./view/films-most-commented-list";
+import NoFilmsView from "./view/no-films";
 import FilmsCountView from "./view/films-count";
 import {generateFilm} from "./mock/film";
 import {generateUser} from "./mock/user";
@@ -15,7 +16,8 @@ import {generateFilter} from "./mock/filter";
 import {
   getArrayOfValueGenerator,
   render,
-  getUserRank
+  getUserRank,
+  NO_USER_RANK
 } from './utils';
 import {FILTER} from "./const";
 
@@ -25,18 +27,15 @@ const FILM_COUNT_PER_STEP = 5;
 const FILM_TOP_RATED_CARDS_COUNT = 2;
 const FILM_MOST_COMMENTED_CARDS_COUNT = 2;
 
+const user = generateUser();
 const films = getArrayOfValueGenerator(generateFilm, FILM_CARDS_COUNT);
 const filmsTopRated = getArrayOfValueGenerator(generateFilm, FILM_TOP_RATED_CARDS_COUNT);
 const filmsMostCommented = getArrayOfValueGenerator(generateFilm, FILM_MOST_COMMENTED_CARDS_COUNT);
-
 const filters = generateFilter(films);
-
-const user = generateUser();
 const alreadyWatchedCount = filters.find(({name}) => name === FILTER.ALREADY_WATCHED).count;
 const userRank = getUserRank(alreadyWatchedCount);
 
 const siteBodyElement = document.body;
-const siteHeaderElement = siteBodyElement.querySelector(`.header`);
 const siteMainElement = siteBodyElement.querySelector(`.main`);
 const siteFooterStatisticsElement = siteBodyElement.querySelector(`.footer__statistics`);
 
@@ -78,54 +77,67 @@ const renderFilm = (filmsListContainerElement, film) => {
   render(filmsListContainerElement, filmCardComponent.getElement());
 };
 
-render(siteHeaderElement, new UserRankView(user, userRank).getElement());
-render(siteMainElement, new NavigationView(filters).getElement());
-render(siteMainElement, new SortView().getElement());
-render(siteMainElement, new FilmsView().getElement());
-render(siteFooterStatisticsElement, new FilmsCountView(FILMS_COUNT).getElement());
+const renderFilmsContent = (containerElement, contentFilms) => {
+  render(containerElement, new SortView().getElement());
+  render(containerElement, new FilmsView().getElement());
 
-const filmsContainerElement = siteMainElement.querySelector(`.films`);
-render(filmsContainerElement, new FilmsListView().getElement());
-render(filmsContainerElement, new FilmsTopRatedListView().getElement());
-render(filmsContainerElement, new FilmsMostCommentedListView().getElement());
+  const filmsContainerElement = containerElement.querySelector(`.films`);
+  render(filmsContainerElement, new FilmsListView().getElement());
+  render(filmsContainerElement, new FilmsTopRatedListView().getElement());
+  render(filmsContainerElement, new FilmsMostCommentedListView().getElement());
 
-const filmsListElement = filmsContainerElement.querySelector(`.films-list`);
-const filmsListContainerElement = filmsListElement.querySelector(`.films-list__container`);
-const [
-  filmsTopRatedListContainerElement,
-  filmsMostCommentedListContainerElement
-] = filmsContainerElement.querySelectorAll(`.films-list--extra .films-list__container`);
+  const filmsListElement = filmsContainerElement.querySelector(`.films-list`);
+  const filmsListContainerElement = filmsListElement.querySelector(`.films-list__container`);
+  const [
+    filmsTopRatedListContainerElement,
+    filmsMostCommentedListContainerElement
+  ] = filmsContainerElement.querySelectorAll(`.films-list--extra .films-list__container`);
 
-for (let i = 0; i < Math.min(films.length, FILM_COUNT_PER_STEP); i++) {
-  renderFilm(filmsListContainerElement, films[i]);
-}
-
-// Если остаются еще фильмы для отрисовки
-// Добавляется кнопка с дейтсвием отображения набора фильмов
-if (films.length > FILM_COUNT_PER_STEP) {
-  let renderedFilmsCount = FILM_COUNT_PER_STEP;
-  const showMoreButtonElement = new ShowMoreButtonView().getElement();
-
-  render(filmsListElement, showMoreButtonElement);
-
-  showMoreButtonElement.addEventListener(`click`, (evt) => {
-    evt.preventDefault();
-    films
-      .slice(renderedFilmsCount, renderedFilmsCount + FILM_COUNT_PER_STEP)
-      .forEach((film) => renderFilm(filmsListContainerElement, film));
-
-    renderedFilmsCount += FILM_COUNT_PER_STEP;
-
-    if (renderedFilmsCount >= films.length) {
-      showMoreButtonElement.remove();
+  if (contentFilms.length === 0) {
+    render(filmsListContainerElement, new NoFilmsView().getElement());
+  } else {
+    for (let i = 0; i < Math.min(contentFilms.length, FILM_COUNT_PER_STEP); i++) {
+      renderFilm(filmsListContainerElement, contentFilms[i]);
     }
-  });
+
+    // Если остаются еще фильмы для отрисовки
+    // Добавляется кнопка с дейтсвием отображения набора фильмов
+    if (contentFilms.length > FILM_COUNT_PER_STEP) {
+      let renderedFilmsCount = FILM_COUNT_PER_STEP;
+      const showMoreButtonElement = new ShowMoreButtonView().getElement();
+
+      render(filmsListElement, showMoreButtonElement);
+
+      showMoreButtonElement.addEventListener(`click`, (evt) => {
+        evt.preventDefault();
+        contentFilms
+          .slice(renderedFilmsCount, renderedFilmsCount + FILM_COUNT_PER_STEP)
+          .forEach((film) => renderFilm(filmsListContainerElement, film));
+
+        renderedFilmsCount += FILM_COUNT_PER_STEP;
+
+        if (renderedFilmsCount >= contentFilms.length) {
+          showMoreButtonElement.remove();
+        }
+      });
+    }
+  }
+
+  for (let i = 0; i < FILM_TOP_RATED_CARDS_COUNT; i++) {
+    renderFilm(filmsTopRatedListContainerElement, filmsTopRated[i]);
+  }
+
+  for (let i = 0; i < FILM_MOST_COMMENTED_CARDS_COUNT; i++) {
+    renderFilm(filmsMostCommentedListContainerElement, filmsMostCommented[i]);
+  }
 }
 
-for (let i = 0; i < FILM_TOP_RATED_CARDS_COUNT; i++) {
-  renderFilm(filmsTopRatedListContainerElement, filmsTopRated[i]);
+if (userRank !== NO_USER_RANK) {
+  const siteHeaderElement = siteBodyElement.querySelector(`.header`);
+
+  render(siteHeaderElement, new UserRankView(user, userRank).getElement());
 }
 
-for (let i = 0; i < FILM_MOST_COMMENTED_CARDS_COUNT; i++) {
-  renderFilm(filmsMostCommentedListContainerElement, filmsMostCommented[i]);
-}
+render(siteMainElement, new NavigationView(filters).getElement());
+renderFilmsContent(siteMainElement, films);
+render(siteFooterStatisticsElement, new FilmsCountView(FILMS_COUNT).getElement());
