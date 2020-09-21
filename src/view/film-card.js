@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import Abstract from "./abstract";
 
 const getHumanizeDuration = (duration) => {
   const hours = Math.round(duration / 60);
@@ -45,25 +45,32 @@ const createFilmCardTemplate = ({comments, filmInfo}) => {
   );
 };
 
-export default class FilmCard {
+export default class FilmCard extends Abstract {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+
+    this._openPopupClickHandler = this._openPopupClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _openPopupClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setOpenPopupClickHandler(callback) {
+    this._callback.editClick = callback;
+    this
+      .getElement()
+      .querySelectorAll([
+        `.film-card__poster`,
+        `.film-card__title`,
+        `.film-card__comments`
+      ])
+      .forEach((element) => element.addEventListener(`click`, this._openPopupClickHandler));
   }
 }

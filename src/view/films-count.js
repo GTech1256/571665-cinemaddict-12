@@ -1,4 +1,4 @@
-import {createElement} from "../utils.js";
+import Abstract from "./abstract.js";
 
 const createFilmsCountTemplate = (filmsCount) => {
   return (
@@ -6,25 +6,13 @@ const createFilmsCountTemplate = (filmsCount) => {
   );
 };
 
-export default class FilmsCount {
+export default class FilmsCount extends Abstract {
   constructor(filmsCount) {
+    super();
     this._filmsCount = filmsCount;
-    this._element = null;
   }
 
   getTemplate() {
     return createFilmsCountTemplate(this._filmsCount);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
