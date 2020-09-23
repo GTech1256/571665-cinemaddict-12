@@ -7,10 +7,10 @@ import ShowMoreButtonView from "../view/show-more-button";
 import TopRatedView from "../view/top-rated";
 import MostCommentedView from "../view/most-commented";
 import NoMoviesView from "../view/no-movies";
-import AllMovies from "../view/all-movies";
+import AllMoviesView from "../view/all-movies";
 import LoadingView from "../view/loading";
 import ShowButtonView from "../view/show-more-button";
-import {render, remove} from "../utils/render";
+import {render, remove, RenderPosition} from "../utils/render";
 import {
   FILTER,
   SortType,
@@ -37,13 +37,15 @@ export default class MovieList {
     this._currentSortType = DEFAULT;
     this._renderedFilmsCount = FILM_CARDS_PER_STEP;
 
+    this._sortComponent = null;
+    this._showButtonComponent = null;
+
     this._filmCardComponent = new FilmCardView();
     this._FilmPopupComponent = new FilmPopupView();
-    this._sortComponent = new SortView();
     this._loadingComponent = new LoadingView();
     this._noMoviesComponent = new NoMoviesView();
     this._movieListComponent = new FilmsView();
-    this._allMoviesComponent = new AllMovies();
+    this._allMoviesComponent = new AllMoviesView();
     this._allMoviesListComponent = new FilmsListView();
     this._topRatedComponent = new TopRatedView();
     this._topRatedListComponent = new FilmsListView();
@@ -52,10 +54,15 @@ export default class MovieList {
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
     this._handleShowButtonClick = this._handleShowButtonClick.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(movieListFilms) {
     this._movieListFilms = movieListFilms.slice();
+    // 1. В отличии от сортировки по любому параметру,
+    // исходный порядок можно сохранить только одним способом -
+    // сохранив исходный массив:
+    this._sourcedmovieListFilms = movieListFilms.slice();
 
     render(this._movieListContainer, this._movieListComponent);
     this._renderMovieList();
@@ -85,8 +92,26 @@ export default class MovieList {
     return sortByCommentsCount(this._movieListFilms.slice());
   }
 
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._currentSortType = sortType;
+
+    this._clearMovieList();
+    this._renderSort();
+    this._renderMovies();
+  }
+
   _renderSort() {
-    // Метод для рендеринга сортировки
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._movieListContainer, this._sortComponent, RenderPosition.BEFORE, this._movieListComponent);
   }
 
   _renderFilmCard(container, film/* , type */) {
@@ -148,6 +173,25 @@ export default class MovieList {
     this._showButtonComponent.setClickHandler(this._handleShowButtonClick);
   }
 
+  _renderMovies() {
+    this._renderAllMovies();
+
+    const isAllRaitingsNull = this._getFilms().every((film) => {
+      return film.rating === 0;
+    });
+    const isAllCommentsNull = this._getFilms().every((film) => {
+      return film.comments.length === 0;
+    });
+
+    if (!isAllRaitingsNull) {
+      this._renderTopRated();
+    }
+
+    if (!isAllCommentsNull) {
+      this._renderMostCommented();
+    }
+  }
+
   _renderAllMovies() {
     this._renderAllMoviesList();
     render(this._movieListComponent, this._allMoviesComponent);
@@ -196,6 +240,13 @@ export default class MovieList {
     render(this._mostCommentedComponent, this._mostCommentedListComponent);
   }
 
+  _clearMovieList() {
+    remove(this._sortComponent);
+    remove(this._allMoviesComponent);
+    this._allMoviesListComponent.getElement().innerHTML = ``;
+    this._renderedFilmsCount = FILM_CARDS_PER_STEP;
+  }
+
   _renderMovieList() {
     if (this._isLoading) {
       this._renderLoading();
@@ -210,21 +261,6 @@ export default class MovieList {
     }
 
     this._renderSort();
-    this._renderAllMovies();
-
-    const isAllRaitingsNull = this._getFilms().every((film) => {
-      return film.rating === 0;
-    });
-    const isAllCommentsNull = this._getFilms().every((film) => {
-      return film.comments.length === 0;
-    });
-
-    if (!isAllRaitingsNull) {
-      this._renderTopRated();
-    }
-
-    if (!isAllCommentsNull) {
-      this._renderMostCommented();
-    }
+    this._renderMovies();
   }
 }

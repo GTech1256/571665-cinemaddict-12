@@ -19,6 +19,7 @@ const generateUserDetails = () => ({
 const generateFilm = () => {
   const description = getRandomStrings(DESCRIPTION_COUNT);
   const comments = getArrayOfValueGenerator(generateComment, COMMENTS_COUNT); // getArrayOfValue(generateComment, COMMENTS_COUNT);
+  const date = new Date(new Date().getTime() - getRandomInteger(99999, 9999999 * 999999)).toISOString();
 
   return {
     comments,
@@ -36,7 +37,7 @@ const generateFilm = () => {
         `Morgan Freeman`
       ],
       release: {
-        "date": `2019-05-11T00:00:00.000Z`,
+        date,
         "release_country": `Finland`
       },
       runtime: getRandomInteger(25, 255),

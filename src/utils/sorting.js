@@ -1,15 +1,12 @@
 import {shuffle} from "./common";
 
 const sortByRating = (films) => {
-  const allRatings = new Set();
-  films.forEach((film) => allRatings.add(film.rating));
-
-  if (allRatings.size === 1) {
+  if (films.length === 1) {
     return shuffle(films);
   }
 
   return films.sort((a, b) => {
-    return b.rating - a.rating;
+    return b.filmInfo.totalRating - a.filmInfo.totalRating;
   });
 };
 
@@ -28,7 +25,7 @@ const sortByCommentsCount = (films) => {
 
 const sortByDate = (films) => {
   return films.sort((a, b) => {
-    return b.date.getTime() - a.date.getTime();
+    return new Date(b.filmInfo.release.date).getTime() - new Date(a.filmInfo.release.date).getTime();
   });
 };
 
