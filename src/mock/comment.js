@@ -1,7 +1,7 @@
 import {
   getRandomStrings,
   getRandomValueFromArray,
-} from "../utils";
+} from "../utils/common";
 
 const COMMENT_EMOTIONS = [`smile`, `sleeping`, `puke`, `angry`];
 

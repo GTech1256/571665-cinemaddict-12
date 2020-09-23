@@ -4,7 +4,7 @@ import {
   getArrayOfValueGenerator,
   getRandomStrings,
   getRandomInteger
-} from "../utils";
+} from "../utils/common";
 
 const DESCRIPTION_COUNT = 5;
 const COMMENTS_COUNT = 5;

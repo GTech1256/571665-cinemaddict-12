@@ -1,4 +1,5 @@
-import {humanizeDate, createElement} from "../utils";
+import {humanizeDate} from "../utils/common";
+import Abstract from "./abstract";
 
 const getHumanizeDuration = (duration) => {
   const hours = Math.round(duration / 60);
@@ -168,25 +169,25 @@ const createFilmInfoPopupTemplate = ({comments, filmInfo}) => {
   );
 };
 
-export default class FilmInfoPopup {
+export default class FilmPopup extends Abstract {
   constructor(film) {
+    super();
     this._film = film;
-    this._element = null;
+
+    this._closeClickHandler = this._closeClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmInfoPopupTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _closeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closeClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setCloseClickHandler(callback) {
+    this._callback.closeClick = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeClickHandler);
   }
 }
