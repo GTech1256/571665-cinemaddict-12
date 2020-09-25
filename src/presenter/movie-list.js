@@ -10,6 +10,7 @@ import NoMoviesView from "../view/no-movies";
 import AllMoviesView from "../view/all-movies";
 import LoadingView from "../view/loading";
 import ShowButtonView from "../view/show-more-button";
+import FilmPresenter from "../presenter/film";
 import {render, remove, RenderPosition} from "../utils/render";
 import {
   FILTER,
@@ -115,34 +116,8 @@ export default class MovieList {
   }
 
   _renderFilmCard(container, film/* , type */) {
-    const filmCardComponent = new FilmCardView(film);
-    let filmInfoPopupComponent = new FilmPopupView(film);
-
-    const hideFilmPopup = () => {
-      this._popUpContainer.removeChild(filmInfoPopupComponent.getElement());
-    };
-
-    const handleOpenPopupClick = () => {
-      render(this._popUpContainer, filmInfoPopupComponent);
-      document.addEventListener(`keydown`, onEscKeyDown);
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        hideFilmPopup();
-        document.removeEventListener(`keydown`, onEscKeyDown);
-      }
-    };
-
-    filmCardComponent.setOpenPopupClickHandler(handleOpenPopupClick);
-
-    filmInfoPopupComponent.setCloseClickHandler(() => {
-      hideFilmPopup();
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    });
-
-    render(container, filmCardComponent);
+    const filmPresenter = new FilmPresenter(container);
+    filmPresenter.init(film);
   }
 
   _renderFilmCards(container, films, type) {
