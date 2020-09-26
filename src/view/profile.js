@@ -1,6 +1,7 @@
 import AbstractView from "./abstract.js";
 
-const createProfileMarkup = (rank) => {
+const createProfileMarkup = (profile) => {
+  const {rank} = profile;
 
   return (
     `<section class="header__profile profile">
@@ -11,12 +12,12 @@ const createProfileMarkup = (rank) => {
 };
 
 export default class Profile extends AbstractView {
-  constructor(rank) {
+  constructor(profile) {
     super();
-    this._rank = rank;
+    this._profile = profile;
   }
 
   getTemplate() {
-    return createProfileMarkup(this._rank);
+    return createProfileMarkup(this._profile);
   }
 }

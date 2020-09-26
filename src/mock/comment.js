@@ -1,17 +1,39 @@
-import {
-  getRandomStrings,
-  getRandomValueFromArray,
-} from "../utils/common";
+import {getRandomInteger, getRandomValue, generateID, generateRandomName} from "../utils/common.js";
+import {EMOJIS} from "../const.js";
 
-const COMMENT_EMOTIONS = [`smile`, `sleeping`, `puke`, `angry`];
+const MAX_COMMENTS = 5;
+const MAX_DAYS_GUP = 30;
+const MAX_HOURS = 23;
+const MAX_MINUTES = 59;
 
-const generateComment = () => ({
-  author: `Ilya O'Reilly`,
-  comment: getRandomStrings(1),
-  date: `2019-05-11T16:12:32.554Z`,
-  emotion: getRandomValueFromArray(COMMENT_EMOTIONS)
-});
+const comments = [
+  `Interesting setting and a good cast`,
+  `Booooooooooring`,
+  `Very very old. Meh`,
+  `Almost two hours? Seriously?`
+];
 
-export {
-  generateComment
+const generateDate = () => {
+  const daysGap = getRandomInteger(-MAX_DAYS_GUP, 0);
+  const currentDate = new Date();
+
+  currentDate.setHours(getRandomInteger(0, MAX_HOURS), getRandomInteger(0, MAX_MINUTES));
+  currentDate.setDate(currentDate.getDate() + daysGap);
+
+  return currentDate;
+};
+
+const generateComment = () => {
+  return {
+    id: generateID(),
+    emoji: getRandomValue(EMOJIS),
+    text: getRandomValue(comments),
+    author: generateRandomName(),
+    day: generateDate()
+  };
+};
+
+export const generateComments = () => {
+  const count = getRandomInteger(0, MAX_COMMENTS);
+  return new Array(count).fill().map(generateComment);
 };

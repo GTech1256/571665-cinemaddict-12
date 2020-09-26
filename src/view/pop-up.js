@@ -1,14 +1,7 @@
 import SmartView from "./smart.js";
 import {formatDuration, formatDate} from "../utils/film.js";
+import {generateID, generateRandomName} from "../utils/common.js";
 import {createCommentsMarkup} from "./comments.js";
-
-const Control = {
-  WATCHLIST: `watchlist`,
-  WATCHED: `watched`,
-  FAVORITE: `favorite`,
-};
-
-const {WATCHLIST, WATCHED, FAVORITE} = Control;
 
 const createGenresMarkup = (genres) => {
 
@@ -64,10 +57,10 @@ const createFilmDetailsMarkup = (film) => {
 };
 
 const createPopUpMarkup = (data) => {
-  const {poster, title, originalTitle, rating, description, age, comments, isWatchList, isWatched, isFavorites, isEmoji, emojiName, text, isDisabled} = data;
+  const {poster, title, originalTitle, rating, description, age, comments, isWatchList, isWatched, isFavorites, isEmoji, emojiName, text} = data;
 
   const filmDetailsMarkup = createFilmDetailsMarkup(data);
-  const commentsMarkup = createCommentsMarkup(comments, isEmoji, emojiName, text, isDisabled);
+  const commentsMarkup = createCommentsMarkup(comments, isEmoji, emojiName, text);
 
   return (
     `<section class="film-details">
@@ -92,7 +85,7 @@ const createPopUpMarkup = (data) => {
                 </div>
               </div>
               ${filmDetailsMarkup}
-              <p class="film-details__film-description">${description}.</p>
+              <p class="film-details__film-description">${description.join(`. `)}.</p>
             </div>
           </div>
           <section class="film-details__controls">
@@ -144,13 +137,12 @@ export default class PopUp extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._restoreComments();
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
     this.setControlsToggleHandler(this._callback.controlsToggle);
     this.setSubmitCommentHandler(this._callback.submitComment);
   }
 
-  _restoreComments() {
+  restoreComments() {
     const newCommentsContainer = this.getElement().querySelector(`.film-details__comments-list`);
     this._renderComments(newCommentsContainer);
   }
@@ -169,9 +161,11 @@ export default class PopUp extends SmartView {
     }
 
     this._comment = {
+      id: generateID(),
+      emoji: `./images/emoji/${this._emoji.emojiName}.png`,
       text: this._newComment.text,
-      day: new Date(),
-      emoji: this._emoji.emojiName,
+      author: generateRandomName(),
+      day: new Date()
     };
   }
 
@@ -183,20 +177,20 @@ export default class PopUp extends SmartView {
   _controlsToggleHandler(evt) {
     evt.preventDefault();
     switch (evt.target.id) {
-      case WATCHLIST:
-        this._callback.controlsToggle(Object.assign({}, PopUp.parseDataToFilm(this._data), {isWatchList: evt.target.checked}), true);
+      case `watchlist`:
+        this._callback.controlsToggle(Object.assign({}, PopUp.parseDataToFilm(this._data), {isWatchList: evt.target.checked}));
         break;
-      case WATCHED:
-        this._callback.controlsToggle(Object.assign({}, PopUp.parseDataToFilm(this._data), {isWatched: evt.target.checked, watchedDate: new Date()}), true);
+      case `watched`:
+        this._callback.controlsToggle(Object.assign({}, PopUp.parseDataToFilm(this._data), {isWatched: evt.target.checked}));
         break;
-      case FAVORITE:
-        this._callback.controlsToggle(Object.assign({}, PopUp.parseDataToFilm(this._data), {isFavorites: evt.target.checked}), true);
+      case `favorite`:
+        this._callback.controlsToggle(Object.assign({}, PopUp.parseDataToFilm(this._data), {isFavorites: evt.target.checked}));
         break;
     }
   }
 
   _shortcutKeysDownHandler(evt) {
-    if ((evt.ctrlKey || evt.metaKey) && evt.key === `Enter`) {
+    if (evt.ctrlKey || evt.metaKey && evt.key === `Enter`) {
       evt.preventDefault();
       this._createComment();
       this._callback.submitComment(this._commentsContainer, this._comment);
@@ -237,7 +231,7 @@ export default class PopUp extends SmartView {
 
 
   static parseFilmToData(film, emoji, comment) {
-    return Object.assign({}, film, emoji, comment, {isDisabled: false});
+    return Object.assign({}, film, emoji, comment);
   }
 
   static parseDataToFilm(data) {
@@ -246,7 +240,6 @@ export default class PopUp extends SmartView {
     delete data.isEmoji;
     delete data.emojiName;
     delete data.text;
-    delete data.isDisabled;
 
     return data;
   }

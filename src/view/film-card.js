@@ -1,6 +1,14 @@
 import AbstractView from "./abstract.js";
 import {formatDuration, formatDate} from "../utils/film.js";
 
+const MAX_DESCRIPTION_LENGTH = 140;
+
+const createDescription = (description) => {
+  const text = `${description.join(`. `)}.`;
+
+  return (text.length > 140) ? `${text.substring(0, MAX_DESCRIPTION_LENGTH)}...` : text;
+};
+
 const createFilmCardMarkup = (film) => {
   const {poster, title, rating, date, duration, genres, description, comments, isWatchList, isWatched, isFavorites} = film;
 
@@ -19,7 +27,7 @@ const createFilmCardMarkup = (film) => {
     </p>
     <img src="${poster}" alt="" class="film-card__poster">
     <p class="film-card__description">
-    ${description}
+    ${createDescription(description)}
     </p>
     <a class="film-card__comments">${comments.length} comments</a>
     <form class="film-card__controls">
@@ -61,7 +69,7 @@ export default class FilmCard extends AbstractView {
         this._callback.controlsClick(Object.assign({}, this._film, {isWatchList: !this._film.isWatchList}));
         break;
       case evt.target.classList.contains(`film-card__controls-item--mark-as-watched`):
-        this._callback.controlsClick(Object.assign({}, this._film, {isWatched: !this._film.isWatched, watchedDate: new Date()}));
+        this._callback.controlsClick(Object.assign({}, this._film, {isWatched: !this._film.isWatched}));
         break;
       case evt.target.classList.contains(`film-card__controls-item--favorite`):
         this._callback.controlsClick(Object.assign({}, this._film, {isFavorites: !this._film.isFavorites}));
