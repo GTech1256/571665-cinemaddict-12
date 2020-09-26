@@ -1,4 +1,23 @@
-export const EMOJIS = [`smile`, `sleeping`, `puke`, `angry`];
+export const EMOJIS = [
+  `./images/emoji/smile.png`,
+  `./images/emoji/sleeping.png`,
+  `./images/emoji/puke.png`,
+  `./images/emoji/angry.png`
+];
+
+export const RANDOM_NAMES = [
+  `John`,
+  `Jimmy`,
+  `Cary`,
+  `Alfred`
+];
+
+export const RANDOM_SURNAMES = [
+  `Doe`,
+  `Stewart`,
+  `Grant`,
+  `Hitchcock`
+];
 
 export const Mode = {
   DEFAULT: `DEFAULT`,
@@ -6,6 +25,7 @@ export const Mode = {
 };
 
 export const UserAction = {
+  UPDATE: `UPDATE_FILM`,
   ADD: `ADD_COMMENT`,
   DELETE: `DELETE_COMMENT`
 };
@@ -13,21 +33,14 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`,
-  INIT: `INIT`
+  MAJOR: `MAJOR`
 };
 
-export const NavigationMode = {
-  MOVIES: `MOVIES`,
-  STATISTICS: `STATISTICS`
-};
-
-export const MenuItem = {
-  ALL: `#all`,
-  WATCHLIST: `#watchlist`,
-  HISTORY: `#history`,
-  FAVORITES: `#favorites`,
-  STATS: `#stats`
+export const FilterType = {
+  ALL: `allmovies`,
+  WATCHLIST: `watchlist`,
+  HISTORY: `history`,
+  FAVORITES: `favorites`
 };
 
 export const SortType = {

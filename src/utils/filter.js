@@ -1,5 +1,5 @@
-import {MenuItem} from "../const.js";
-const {ALL, WATCHLIST, HISTORY, FAVORITES} = MenuItem;
+import {FilterType} from "../const.js";
+const {ALL, WATCHLIST, HISTORY, FAVORITES} = FilterType;
 
 export const filterRules = {
   [ALL]: (film) => film,
@@ -22,9 +22,9 @@ export const getFiltersCount = (films) => {
   }
 
   return films.reduce((filter, film) => {
-    filter.watchlist = addFilteredFilmsCount(filter.watchlist, filterRules[WATCHLIST](film));
-    filter.history = addFilteredFilmsCount(filter.history, filterRules[HISTORY](film));
-    filter.favorites = addFilteredFilmsCount(filter.favorites, filterRules[FAVORITES](film));
+    filter[WATCHLIST] = addFilteredFilmsCount(filter[WATCHLIST], filterRules[WATCHLIST](film));
+    filter[HISTORY] = addFilteredFilmsCount(filter[HISTORY], filterRules[HISTORY](film));
+    filter[FAVORITES] = addFilteredFilmsCount(filter[FAVORITES], filterRules[FAVORITES](film));
 
     return filter;
   }, {});
