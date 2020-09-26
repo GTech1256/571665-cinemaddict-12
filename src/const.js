@@ -16,13 +16,14 @@ export const UserAction = {
 export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
-  MAJOR: `MAJOR`
+  MAJOR: `MAJOR`,
+  INIT: `INIT`
 };
 
 export const NavigationMode = {
   MOVIES: `MOVIES`,
   STATISTICS: `STATISTICS`
-}
+};
 
 export const MenuItem = {
   ALL: `#all`,
@@ -30,7 +31,7 @@ export const MenuItem = {
   HISTORY: `#history`,
   FAVORITES: `#favorites`,
   STATS: `#stats`
-}
+};
 
 export const SortType = {
   DEFAULT: `default`,
