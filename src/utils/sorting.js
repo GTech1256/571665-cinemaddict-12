@@ -1,21 +1,32 @@
-import {shuffle} from "./common";
+const shuffleItems = (items) => {
+  for (let i = items.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = items[i];
+    items[i] = items[j];
+    items[j] = temp;
+  }
+  return items;
+};
 
-const sortByRating = (films) => {
-  if (films.length === 1) {
-    return shuffle(films);
+export const sortByRating = (films) => {
+  const allRatings = new Set();
+  films.forEach((film) => allRatings.add(film.rating));
+
+  if (allRatings.size === 1) {
+    return shuffleItems(films);
   }
 
   return films.sort((a, b) => {
-    return b.filmInfo.totalRating - a.filmInfo.totalRating;
+    return b.rating - a.rating;
   });
 };
 
-const sortByCommentsCount = (films) => {
+export const sortByCommentsCount = (films) => {
   const allComments = new Set();
   films.forEach((film) => allComments.add(film.comments.length));
 
   if (allComments.size === 1) {
-    return shuffle(films);
+    return shuffleItems(films);
   }
 
   return films.sort((a, b) => {
@@ -23,14 +34,8 @@ const sortByCommentsCount = (films) => {
   });
 };
 
-const sortByDate = (films) => {
+export const sortByDate = (films) => {
   return films.sort((a, b) => {
-    return new Date(b.filmInfo.release.date).getTime() - new Date(a.filmInfo.release.date).getTime();
+    return b.date.getTime() - a.date.getTime();
   });
-};
-
-export {
-  sortByRating,
-  sortByCommentsCount,
-  sortByDate
 };

@@ -1,13 +1,13 @@
-import Abstract from "./abstract.js";
+import AbstractView from "./abstract.js";
 
-const createFilmsListTemplate = () => {
+const createFilmsListMarkup = () => {
   return (
     `<div class="films-list__container"></div>`
   );
 };
 
-export default class FilmsList extends Abstract {
+export default class FilmsList extends AbstractView {
   getTemplate() {
-    return createFilmsListTemplate();
+    return createFilmsListMarkup();
   }
 }
