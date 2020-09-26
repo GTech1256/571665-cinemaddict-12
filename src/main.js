@@ -6,7 +6,7 @@ import MoviesModel from "./model/movies.js";
 import CommentsModel from "./model/comments.js";
 import FilterModel from "./model/filter.js";
 import {render} from "./utils/render.js";
-import {UpdateType} from "./const.js";
+import {UpdateType} from "./const.js"
 import Api from "./api.js";
 
 const {INIT} = UpdateType;
@@ -30,10 +30,10 @@ const navigationPresenter = new NavigationPresenter(main, filterModel, moviesMod
 movieListPresenter.init();
 navigationPresenter.init();
 
-let films = [];
-api.getMovies()
+  let films=[];
+  api.getMovies()
   .then((movies) => {
-    films = movies;
+    films = movies
     return movies;
   })
   .then((movies) => movies.map((film) => api.getComments(film.id)))
@@ -50,3 +50,20 @@ api.getMovies()
     profilePresenter.init();
     render(footer.lastElementChild, new TotalView(moviesModel.getMovies()));
   });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
