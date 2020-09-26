@@ -2,16 +2,18 @@ import MoviesModel from "./model/movies.js";
 import CommentsModel from "./model/comments.js";
 
 const Method = {
-  GET: `GET`,
-  PUT: `PUT`
-};
+    GET: `GET`,
+    PUT: `PUT`,
+    POST: `POST`,
+    DELETE: `DELETE`
+  };
 
 const SuccessHTTPStatusRange = {
-  MIN: 200,
-  MAX: 299
-};
+    MIN: 200,
+    MAX: 299
+  };
 
-const {GET, PUT} = Method;
+const {GET, PUT, POST, DELETE} = Method;
 const {MIN, MAX} = SuccessHTTPStatusRange;
 
 export default class Api {
@@ -43,6 +45,24 @@ export default class Api {
       .then(MoviesModel.adaptToClient);
   }
 
+  addComment(comment, filmID) {
+    return this._load({
+      url: `comments/${filmID}`,
+      method: POST,
+      body: JSON.stringify(CommentsModel.adaptToServer(comment)),
+      headers: new Headers({"Content-Type": `application/json`})
+    })
+      .then(Api.toJSON)
+      .then((response) => response.comments.map(CommentsModel.adaptToClient));
+  }
+
+  deleteComment(comment) {
+    return this._load({
+      url: `comments/${comment.id}`,
+      method: DELETE
+    });
+  }
+
   _load({
     url,
     method = GET,
@@ -51,7 +71,7 @@ export default class Api {
   }) {
     headers.append(`Authorization`, this._authorization);
 
-    return fetch(`${this._serverName}/${url}`, {method, body, headers})
+    return fetch(`${this._serverName}/${url}`,{method, body, headers})
       .then(Api.checkStatus)
       .catch(Api.catchError);
   }
