@@ -50,20 +50,20 @@ export default class FilmCard extends Abstract {
     super();
     this._film = film;
 
-    this._openPopupClickHandler = this._openPopupClickHandler.bind(this);
+    this._filmDetailsClickHandler = this._filmDetailsClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  _openPopupClickHandler(evt) {
+  _filmDetailsClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.filmDetailsClick();
   }
 
-  setOpenPopupClickHandler(callback) {
-    this._callback.editClick = callback;
+  setFilmDetailsClickHandler(callback) {
+    this._callback.filmDetailsClick = callback;
     this
       .getElement()
       .querySelectorAll([
@@ -71,6 +71,6 @@ export default class FilmCard extends Abstract {
         `.film-card__title`,
         `.film-card__comments`
       ])
-      .forEach((element) => element.addEventListener(`click`, this._openPopupClickHandler));
+      .forEach((element) => element.addEventListener(`click`, this._filmDetailsClickHandler));
   }
 }

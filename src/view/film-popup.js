@@ -174,20 +174,20 @@ export default class FilmPopup extends Abstract {
     super();
     this._film = film;
 
-    this._closeClickHandler = this._closeClickHandler.bind(this);
+    this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
   }
 
   getTemplate() {
     return createFilmInfoPopupTemplate(this._film);
   }
 
-  _closeClickHandler(evt) {
+  _closeButtonClickHandler(evt) {
     evt.preventDefault();
-    this._callback.closeClick();
+    this._callback.closeButtonClick();
   }
 
-  setCloseClickHandler(callback) {
-    this._callback.closeClick = callback;
-    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeClickHandler);
+  setCloseButtonClickHandler(callback) {
+    this._callback.closeButtonClick = callback;
+    this.getElement().querySelector(`.film-details__close-btn`).addEventListener(`click`, this._closeButtonClickHandler);
   }
 }
