@@ -1,53 +1,43 @@
-const FILTER = {
-  ALL: `ALL`,
-  WATCHLIST: `watchlist`,
-  ALREADY_WATCHED: `alreadyWatched`,
-  FAVORITES: `favorites`
-};
+export const EMOJIS = [`smile`, `sleeping`, `puke`, `angry`];
 
-const EMOJIS = [`smile`, `sleeping`, `puke`, `angry`];
-
-const Mode = {
+export const Mode = {
   DEFAULT: `DEFAULT`,
   POPUP: `POPUP`
 };
 
-const UserAction = {
+export const UserAction = {
   ADD: `ADD_COMMENT`,
   DELETE: `DELETE_COMMENT`
 };
 
-const UpdateType = {
+export const UpdateType = {
   PATCH: `PATCH`,
   MINOR: `MINOR`,
   MAJOR: `MAJOR`,
   INIT: `INIT`
 };
 
-const NavigationMode = {
+export const NavigationMode = {
   MOVIES: `MOVIES`,
   STATISTICS: `STATISTICS`
 };
 
-const SortType = {
+export const MenuItem = {
+  ALL: `#all`,
+  WATCHLIST: `#watchlist`,
+  HISTORY: `#history`,
+  FAVORITES: `#favorites`,
+  STATS: `#stats`
+};
+
+export const SortType = {
   DEFAULT: `default`,
   DATE: `date`,
   RATING: `rating`
 };
 
-const FilmsType = {
+export const FilmsType = {
   ALL: `all`,
   RATED: `top rated`,
   COMMENTED: `most commented`
-};
-
-export {
-  FILTER,
-  EMOJIS,
-  Mode,
-  UserAction,
-  UpdateType,
-  NavigationMode,
-  SortType,
-  FilmsType
 };

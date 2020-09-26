@@ -1,9 +1,9 @@
-import Abstract from "./abstract.js";
+import AbstractView from "./abstract.js";
 import {SortType} from "../const.js";
 
 const {DEFAULT, DATE, RATING} = SortType;
 
-const createSortTemplate = (currentSortType) => {
+const createSortingMarkup = (currentSortType) => {
   return (
     `<ul class="sort">
     <li><a href="#" class="sort__button ${currentSortType === DEFAULT ? `sort__button--active` : ``}" data-sort-type="${DEFAULT}">Sort by default</a></li>
@@ -13,24 +13,21 @@ const createSortTemplate = (currentSortType) => {
   );
 };
 
-export default class Sort extends Abstract {
+export default class Sorting extends AbstractView {
   constructor(currentSortType) {
     super();
-
     this._currentSortType = currentSortType;
-
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createSortTemplate(this._currentSortType);
+    return createSortingMarkup(this._currentSortType);
   }
 
   _sortTypeChangeHandler(evt) {
     if (evt.target.tagName !== `A`) {
       return;
     }
-
     evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
